@@ -1,0 +1,29 @@
+spring:
+  profiles:
+    active: default
+
+server:
+  port: ${port:8081}
+
+---
+
+spring:
+  profiles: default
+  datasource:
+    url: ${JDBC_DATABASE_URL}
+    driver-class-name: org.postgresql.Driver
+    username: ${JDBC_DATABASE_USERNAME}
+    password: ${JDBC_DATABASE_PASSWORD}
+
+logging:
+  file: ionic-chat-client-server.log
+  level:
+    com:
+      alimmit: DEBUG
+
+auth:
+  server:
+    url: ${AUTHORIZATION_SERVER_URL}
+    clientId: ${AUTHORIZATION_CLIENT_ID}
+    clientSecret: ${AUTHORIZATION_CLIENT_SECRET}
+    tokenSigningKey: abc123

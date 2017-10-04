@@ -1,0 +1,27 @@
+#!bin/bash
+
+docker-machine status default | grep 'Running' &> /dev/null
+
+if [ $? == 0 ]; then
+    echo "*************************************"
+    echo "Docker Machine is running"
+    echo "*************************************"
+else
+    docker-machine start default
+    docker-machine env default
+    eval $(docker-machine env default)
+fi
+
+ROOT_NAME=$(pwd | awk -F/ '{print $NF}')
+DATABASE_NAME=$ROOT_NAME
+DOCKER_CONTAINER="${ROOT_NAME}-postgres"
+DOCKER_POSTGRES_PORT=9877
+
+docker-machine status default | grep 'Running' &> /dev/null
+
+export JDBC_DATABASE_URL=jdbc:postgresql://dockerhost:9877/ionic-chat-client-server?currentSchema=chat
+export JDBC_DATABASE_USERNAME=postgres
+export JDBC_DATABASE_PASSWORD=postgres
+export AUTHORIZATION_SERVER_URL=http://localhost:8080/oauth/check_token
+export AUTHORIZATION_CLIENT_ID=clientIdPassword
+export AUTHORIZATION_CLIENT_SECRET=secret
