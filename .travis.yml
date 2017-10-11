@@ -1,0 +1,18 @@
+language: java
+jdk: oraclejdk8
+install: true
+script: ./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+
+cache:
+  directories:
+    - $HOME/.m2
+
+after_success:
+  - docker login -e $DOCKER_EMAIL -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+  - export REPO=timmila/ionic-chat-client-server
+  - export TAG=latest
+  - docker build -f Dockerfile -t $REPO:$TAG .
+  - docker push $REPO
+
+services:
+  - docker
