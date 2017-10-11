@@ -6,25 +6,31 @@ import org.springframework.context.annotation.Configuration;
 
 import java.net.URL;
 
-@EnableConfigurationProperties
-@ConfigurationProperties(prefix = "auth.server")
 @Configuration
+@EnableConfigurationProperties
+@ConfigurationProperties(prefix = "auth.client")
 public class AuthorizationServerProperties {
 
-    private URL url;
+    private String accessTokenUri;
+    private String checkTokenUri;
     private String clientId;
     private String clientSecret;
     private String tokenSigningKey;
 
-    URL getUrl() {
-        return url;
+    public String getAccessTokenUri() {
+        return accessTokenUri;
     }
 
-    public void setUrl(final URL url) {
-        if (this.url != null) {
-            return;
-        }
-        this.url = url;
+    public void setAccessTokenUri(final String accessTokenUri) {
+        this.accessTokenUri = accessTokenUri;
+    }
+
+    public String getCheckTokenUri() {
+        return checkTokenUri;
+    }
+
+    public void setCheckTokenUri(final String checkTokenUri) {
+        this.checkTokenUri = checkTokenUri;
     }
 
     String getClientId() {
