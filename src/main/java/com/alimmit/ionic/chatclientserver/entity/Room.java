@@ -2,6 +2,7 @@ package com.alimmit.ionic.chatclientserver.entity;
 
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 @Entity
@@ -15,6 +16,7 @@ public class Room extends AbstractPersistable<Long> {
         return room;
     }
 
+    @Column(nullable = false, unique = true)
     private String name;
 
     public String getName() {

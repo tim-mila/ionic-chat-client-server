@@ -10,8 +10,8 @@ import java.util.List;
 @RestController
 public class RoomController {
 
-    private final static String PATH = Path.API_V1 + "/rooms";
-    private final static String PATH_READ = RoomController.PATH + "/{id}";
+    public final static String ROOMS = Path.API_V1 + "/rooms";
+    public final static String ROOMS_READ = RoomController.ROOMS + "/{id}";
 
     private final RoomRepository roomRepository;
 
@@ -19,18 +19,18 @@ public class RoomController {
         this.roomRepository = roomRepository;
     }
 
-    @PostMapping(RoomController.PATH)
+    @PostMapping(RoomController.ROOMS)
     @ResponseStatus(code = HttpStatus.CREATED)
     public Room create(@RequestBody final Room room) {
         return roomRepository.save(room);
     }
 
-    @GetMapping(RoomController.PATH)
+    @GetMapping(RoomController.ROOMS)
     public List<Room> all() {
         return roomRepository.findAll();
     }
 
-    @GetMapping(RoomController.PATH_READ)
+    @GetMapping(RoomController.ROOMS_READ)
     public Room read(@PathVariable final Long id) {
         return roomRepository.findOne(id);
     }
