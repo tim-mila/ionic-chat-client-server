@@ -4,6 +4,5 @@ create table "chat" (
     "room_id" bigint references "room"("id"),
     "username" character varying(255),
     "text" text,
-    constraint "chat_pkey" primary key("id"),
-    constraint "uidx_chat_username" unique ("username")
+    constraint "chat_pkey" primary key("id")
 );

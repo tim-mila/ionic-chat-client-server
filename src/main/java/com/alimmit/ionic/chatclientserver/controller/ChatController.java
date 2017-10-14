@@ -12,6 +12,7 @@ import java.util.List;
 public class ChatController {
 
     private final static String CHATS = RoomController.ROOMS + "/{roomName}/chats";
+    private final static String CHAT = RoomController.ROOMS + "/{roomName}/chat";
 
     private final ChatRepository chatRepository;
     private final RoomRepository roomRepository;
@@ -26,8 +27,8 @@ public class ChatController {
         return chatRepository.findByRoomNameOrderByAtDesc(roomName);
     }
 
-    @PostMapping(ChatController.CHATS)
-    public List<Chat> create(@PathVariable final String roomName, @RequestBody final Chat chat) {
+    @PostMapping(ChatController.CHAT)
+    public List<Chat> create(@PathVariable("roomName") final String roomName, @RequestBody final Chat chat) {
         final Room room = roomRepository.findByName(roomName);
         chatRepository.save(chat.setRoom(room));
         return list(roomName);

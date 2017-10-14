@@ -3,7 +3,7 @@ spring:
     active: default
 
 server:
-  port: ${port:8081}
+  port: ${port:4000}
 
 ---
 

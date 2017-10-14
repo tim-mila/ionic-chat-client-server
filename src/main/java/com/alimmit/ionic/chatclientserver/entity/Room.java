@@ -1,5 +1,6 @@
 package com.alimmit.ionic.chatclientserver.entity;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import javax.persistence.Column;
@@ -11,9 +12,14 @@ public class Room extends AbstractPersistable<Long> {
     private static final long serialVersionUID = 8553972704081064721L;
 
     public static Room create(final String name) {
-        final Room room = new Room();
-        room.name = name;
-        return room;
+        return new Room(name);
+    }
+
+    public Room() { }
+
+    @JsonCreator
+    public Room(final String name) {
+        this.name = name;
     }
 
     @Column(nullable = false, unique = true)

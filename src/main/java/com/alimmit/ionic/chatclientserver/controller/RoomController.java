@@ -10,6 +10,7 @@ import java.util.List;
 @RestController
 public class RoomController {
 
+    public final static String ROOM = Path.API_V1 + "/room";
     public final static String ROOMS = Path.API_V1 + "/rooms";
     public final static String ROOMS_READ = RoomController.ROOMS + "/{id}";
 
@@ -19,7 +20,7 @@ public class RoomController {
         this.roomRepository = roomRepository;
     }
 
-    @PostMapping(RoomController.ROOMS)
+    @PostMapping(RoomController.ROOM)
     @ResponseStatus(code = HttpStatus.CREATED)
     public Room create(@RequestBody final Room room) {
         return roomRepository.save(room);
