@@ -28,9 +28,8 @@ public class ChatController {
     }
 
     @PostMapping(ChatController.CHAT)
-    public List<Chat> create(@PathVariable("roomName") final String roomName, @RequestBody final Chat chat) {
+    public Chat create(@PathVariable("roomName") final String roomName, @RequestBody final Chat chat) {
         final Room room = roomRepository.findByName(roomName);
-        chatRepository.save(chat.setRoom(room));
-        return list(roomName);
+        return chatRepository.save(chat.setRoom(room));
     }
 }

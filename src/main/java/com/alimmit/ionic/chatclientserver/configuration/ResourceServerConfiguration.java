@@ -17,11 +17,12 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
     @Override
     public void configure(final HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers(Path.SIGNUP, Path.LOGIN).permitAll()
+                .antMatchers(Path.SIGNUP, Path.LOGIN, WebSocketSecurityConfiguration.PATH).permitAll()
                 .anyRequest().authenticated()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().cors()
-                .and().csrf().disable();
+                .and().csrf().disable()
+                .logout().logoutUrl("/api/v1/user/logout");
     }
 
     @Bean
