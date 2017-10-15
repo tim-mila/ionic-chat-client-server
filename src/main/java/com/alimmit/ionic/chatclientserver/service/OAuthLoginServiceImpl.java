@@ -40,8 +40,8 @@ public class OAuthLoginServiceImpl implements OAuthLoginService {
         final MultiValueMap<String, String> headers = new HttpHeaders();
         headers.add("Authorization", authorizationHeader);
 
-        final User registered = template.exchange(authorizationServerProperties.getSignUpUri(), HttpMethod.POST, new HttpEntity<User>(user), User.class).getBody();
-        return login(registered);
+        template.exchange(authorizationServerProperties.getSignUpUri(), HttpMethod.POST, new HttpEntity<User>(user), User.class).getBody();
+        return login(user);
     }
 
     @Override
