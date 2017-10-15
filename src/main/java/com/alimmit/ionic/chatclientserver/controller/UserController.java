@@ -21,9 +21,9 @@ public class UserController {
         this.oAuthLoginService = oAuthLoginService;
     }
 
-    @PostMapping(Path.SIGNUP)
-    public String signup(@RequestBody final User user) {
-        return "signup";
+    @PostMapping(Path.SIGN_UP)
+    public ResponseEntity<OAuth2AccessToken> signup(@RequestBody final User user) {
+        return oAuthLoginService.signup(user);
     }
 
     @PostMapping(Path.LOGIN)

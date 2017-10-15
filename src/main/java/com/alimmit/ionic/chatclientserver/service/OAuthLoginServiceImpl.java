@@ -33,6 +33,18 @@ public class OAuthLoginServiceImpl implements OAuthLoginService {
     }
 
     @Override
+    public ResponseEntity<OAuth2AccessToken> signup(final User user) {
+        final RestTemplate template = restTemplate();
+
+        final String authorizationHeader = "Basic " + org.apache.commons.codec.binary.Base64.encodeBase64String("clientIdPassword:secret".getBytes());
+        final MultiValueMap<String, String> headers = new HttpHeaders();
+        headers.add("Authorization", authorizationHeader);
+
+        final User registered = template.exchange(authorizationServerProperties.getSignUpUri(), HttpMethod.POST, new HttpEntity<User>(user), User.class).getBody();
+        return login(registered);
+    }
+
+    @Override
     public ResponseEntity<OAuth2AccessToken> login(final User user) {
 
         final RestTemplate template = restTemplate();
@@ -48,7 +60,7 @@ public class OAuthLoginServiceImpl implements OAuthLoginService {
         body.add("password", user.getPassword());
 
         final HttpEntity entity = new HttpEntity<>(body, headers);
-        return  template.exchange(authorizationServerProperties.getAccessTokenUri(), HttpMethod.POST, entity, OAuth2AccessToken.class);
+        return template.exchange(authorizationServerProperties.getAccessTokenUri(), HttpMethod.POST, entity, OAuth2AccessToken.class);
     }
 
     private RestTemplate restTemplate() {

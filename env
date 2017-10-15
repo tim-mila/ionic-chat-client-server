@@ -24,7 +24,7 @@ export JDBC_DATABASE_USERNAME=postgres
 export JDBC_DATABASE_PASSWORD=postgres
 export AUTHORIZATION_SERVER_ACCESS_TOKEN_URL=http://localhost:8080/oauth/token
 export AUTHORIZATION_SERVER_CHECK_TOKEN_URL=http://localhost:8080/oauth/check_token
-export AUTHORIZATION_SERVER_USER_INFO_URL=http://localhost:8080/api/v1/user/@me
+export AUTHORIZATION_SERVER_SIGN_UP_URL=http://localhost:8080/api/v1/user/signup
 export AUTHORIZATION_CLIENT_ID=clientIdPassword
 export AUTHORIZATION_CLIENT_SECRET=secret
 

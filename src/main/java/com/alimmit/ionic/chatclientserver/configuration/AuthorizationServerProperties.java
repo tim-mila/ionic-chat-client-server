@@ -13,6 +13,7 @@ public class AuthorizationServerProperties {
 
     private String accessTokenUri;
     private String checkTokenUri;
+    private String signUpUri;
     private String clientId;
     private String clientSecret;
     private String tokenSigningKey;
@@ -31,6 +32,14 @@ public class AuthorizationServerProperties {
 
     public void setCheckTokenUri(final String checkTokenUri) {
         this.checkTokenUri = checkTokenUri;
+    }
+
+    public String getSignUpUri() {
+        return signUpUri;
+    }
+
+    public void setSignUpUri(final String signUpUri) {
+        this.signUpUri = signUpUri;
     }
 
     String getClientId() {
