@@ -24,13 +24,6 @@ logging:
     com:
       alimmit: DEBUG
 
-#auth:
-#  server:
-#    url: ${AUTHORIZATION_SERVER_URL}
-#    clientId: ${AUTHORIZATION_CLIENT_ID}
-#    clientSecret: ${AUTHORIZATION_CLIENT_SECRET}
-#    tokenSigningKey: abc123
-
 auth:
   client:
     clientId: ${AUTHORIZATION_CLIENT_ID}
