@@ -1,6 +1,6 @@
 FROM openjdk:8-jre
 
-EXPOSE 8080
+EXPOSE 4000
 
 ADD ./target/*.jar ionic-chat-client-server.jar
 

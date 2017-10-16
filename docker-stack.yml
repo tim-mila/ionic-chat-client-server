@@ -14,14 +14,14 @@ ionic-chat-server-app:
     - AUTHORIZATION_SERVER_SIGN_UP_URL=https://auth.ionic-chat.alimmit.com/api/v1/user/signup
     - AUTHORIZATION_CLIENT_ID=clientIdPassword
     - AUTHORIZATION_CLIENT_SECRET=secret
-  image: 'timmila/ionic-chat-client-authorization:latest'
+  image: 'timmila/ionic-chat-client-server:latest'
   links:
     - ionic-chat-server-postgres
   tags:
     - ionic-chat-server
   volumes:
     - '/dev/urandom:/dev/random'
-    - '/var/lib/docker/volumes/logs/ionic-chat-server:/var/log/ionic-chat-authorization'
+    - '/var/lib/docker/volumes/logs/ionic-chat-server:/var/log/ionic-chat-server'
 ionic-chat-server-letsencrypt:
   image: 'jrcs/letsencrypt-nginx-proxy-companion:latest'
   tags:
