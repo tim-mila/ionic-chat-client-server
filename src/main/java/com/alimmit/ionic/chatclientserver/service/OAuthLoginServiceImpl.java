@@ -4,10 +4,7 @@ import com.alimmit.ionic.chatclientserver.bean.User;
 import com.alimmit.ionic.chatclientserver.configuration.AuthorizationServerProperties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -16,6 +13,7 @@ import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
@@ -34,33 +32,46 @@ public class OAuthLoginServiceImpl implements OAuthLoginService {
 
     @Override
     public ResponseEntity<OAuth2AccessToken> signup(final User user) {
-        final RestTemplate template = restTemplate();
+        try {
+            LOG.debug("signup::" + user.getUsername());
+            final RestTemplate template = restTemplate();
 
-        final String authorizationHeader = "Basic " + org.apache.commons.codec.binary.Base64.encodeBase64String("clientIdPassword:secret".getBytes());
-        final MultiValueMap<String, String> headers = new HttpHeaders();
-        headers.add("Authorization", authorizationHeader);
+            final String authorizationHeader = "Basic " + org.apache.commons.codec.binary.Base64.encodeBase64String("clientIdPassword:secret".getBytes());
+            final MultiValueMap<String, String> headers = new HttpHeaders();
+            headers.add("Authorization", authorizationHeader);
 
-        template.exchange(authorizationServerProperties.getSignUpUri(), HttpMethod.POST, new HttpEntity<User>(user), User.class).getBody();
-        return login(user);
+            template.exchange(authorizationServerProperties.getSignUpUri(), HttpMethod.POST, new HttpEntity<User>(user), User.class).getBody();
+            return login(user);
+        }
+        catch(Exception e) {
+            LOG.error("signup::" + e.getMessage());
+            throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
     }
 
     @Override
     public ResponseEntity<OAuth2AccessToken> login(final User user) {
+        try {
+            LOG.debug("login::" + user.getUsername());
+            final RestTemplate template = restTemplate();
 
-        final RestTemplate template = restTemplate();
+            final String authorizationHeader = "Basic " + org.apache.commons.codec.binary.Base64.encodeBase64String("clientIdPassword:secret".getBytes());
+            final MultiValueMap<String, String> headers = new HttpHeaders();
+            headers.add("Authorization", authorizationHeader);
 
-        final String authorizationHeader = "Basic " + org.apache.commons.codec.binary.Base64.encodeBase64String("clientIdPassword:secret".getBytes());
-        final MultiValueMap<String, String> headers = new HttpHeaders();
-        headers.add("Authorization", authorizationHeader);
+            final MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+            body.add("grant_type", "password");
+            body.add("clientId", "clientIdPassword");
+            body.add("username", user.getUsername());
+            body.add("password", user.getPassword());
 
-        final MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("grant_type", "password");
-        body.add("clientId", "clientIdPassword");
-        body.add("username", user.getUsername());
-        body.add("password", user.getPassword());
-
-        final HttpEntity entity = new HttpEntity<>(body, headers);
-        return template.exchange(authorizationServerProperties.getAccessTokenUri(), HttpMethod.POST, entity, OAuth2AccessToken.class);
+            final HttpEntity entity = new HttpEntity<>(body, headers);
+            return template.exchange(authorizationServerProperties.getAccessTokenUri(), HttpMethod.POST, entity, OAuth2AccessToken.class);
+        }
+        catch(Exception e) {
+            LOG.error("login::" + e.getMessage());
+            throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
     }
 
     private RestTemplate restTemplate() {

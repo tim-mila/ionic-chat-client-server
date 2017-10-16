@@ -1,0 +1,70 @@
+version: "2"
+
+services:
+
+  ionic-chat-client-authorization:
+    image: timmila/chat-client-authorization:latest
+    ports:
+      - 8080:8080
+    environment:
+      - JDBC_DATABASE_URL=jdbc:postgresql://ionic-chat-client-authorization-postgres:5432/ionic-chat-client-authorization?currentSchema=chat
+      - JDBC_DATABASE_USERNAME=ionic_user
+      - JDBC_DATABASE_PASSWORD=abc123
+#    networks:
+#      - ionic-chat-client-authorization-db
+    depends_on:
+      - ionic-chat-client-authorization-postgres
+
+  ionic-chat-client-authorization-postgres:
+    image: postgres:9.6
+    ports:
+      - 5432:5432
+    volumes:
+      - "./src/docker/postgres:/docker-entrypoint-initdb.d/"
+      - ionic-chat-client-authorization-pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=ionic_user
+      - POSTGRES_PASSWORD=abc123
+#    networks:
+#      - ionic-chat-client-authorization-db
+
+  ionic-chat-client-server:
+    image: timmila/ionic-chat-client-server:latest
+    ports:
+      - 4000:8080
+    environment:
+      - JDBC_DATABASE_URL=jdbc:postgresql://ionic-chat-client-authorization-postgres:5432/ionic-chat-client-server?currentSchema=chat
+      - JDBC_DATABASE_USERNAME=ionic_user
+      - JDBC_DATABASE_PASSWORD=abc123
+      - AUTHORIZATION_SERVER_ACCESS_TOKEN_URL=http://ionic-chat-client-authorization:8080/oauth/token
+      - AUTHORIZATION_SERVER_CHECK_TOKEN_URL=http://ionic-chat-client-authorization:8080/oauth/check_token
+      - AUTHORIZATION_SERVER_SIGN_UP_URL=http://ionic-chat-client-authorization:8080/api/v1/user/signup
+      - AUTHORIZATION_CLIENT_ID=clientIdPassword
+      - AUTHORIZATION_CLIENT_SECRET=secret
+#    networks:
+#      - ionic-chat-client-server-db
+    depends_on:
+      - ionic-chat-client-server-postgres
+
+  ionic-chat-client-server-postgres:
+    image: postgres:9.6
+    ports:
+      - 5433:5432
+    volumes:
+      - "./src/docker/postgres:/docker-entrypoint-initdb.d/"
+      - ionic-chat-client-server-pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=ionic_user
+      - POSTGRES_PASSWORD=abc123
+#    networks:
+#      - ionic-chat-client-server-db
+
+volumes:
+  ionic-chat-client-authorization-pgdata:
+  ionic-chat-client-authorization-logging:
+  ionic-chat-client-server-pgdata:
+  ionic-chat-client-server-logging:
+
+#networks:
+#  ionic-chat-client-authorization-db:
+#  ionic-chat-client-server-db:

@@ -23,11 +23,13 @@ public class UserController {
 
     @PostMapping(Path.SIGN_UP)
     public ResponseEntity<OAuth2AccessToken> signup(@RequestBody final User user) {
+        LOG.debug("signup::" + user.getUsername());
         return oAuthLoginService.signup(user);
     }
 
     @PostMapping(Path.LOGIN)
     public ResponseEntity<OAuth2AccessToken> login(@RequestBody final User user) {
+        LOG.debug("login::" + user.getUsername());
         return oAuthLoginService.login(user);
     }
 }
