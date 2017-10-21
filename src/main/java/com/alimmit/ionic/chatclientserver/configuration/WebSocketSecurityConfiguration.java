@@ -1,5 +1,7 @@
 package com.alimmit.ionic.chatclientserver.configuration;
 
+import com.alimmit.ionic.chatclientserver.repository.ChatMessageWebSocketSessionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
@@ -10,48 +12,31 @@ import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 
 @Configuration
 @EnableWebSocket
-//@EnableWebSocketMessageBroker
-public class WebSocketSecurityConfiguration /*extends AbstractSecurityWebSocketMessageBrokerConfigurer*/ implements WebSocketConfigurer {
+public class WebSocketSecurityConfiguration implements WebSocketConfigurer {
 
     public static final String PATH = "/chat";
+    public static final String[] SUPPORTED_PROTOCOLS = {"protocolone", "protocoltwo"};
+
+    @Autowired
+    private ChatMessageWebSocketSessionRepository chatMessageWebSocketSessionRepository;
 
     @Override
     public void registerWebSocketHandlers(final WebSocketHandlerRegistry webSocketHandlerRegistry) {
         webSocketHandlerRegistry
-                .addHandler(protocolOneWebSocketHandler(), PATH)
+                .addHandler(chatMessageTextWebSocketHandler(), PATH)
                 .setAllowedOrigins("*")
                 .setHandshakeHandler(protocolOneHandshakeHandler());
     }
 
     @Bean
-    public ProtocolOneWebSocketHandler protocolOneWebSocketHandler() {
-        return new ProtocolOneWebSocketHandler();
+    public ChatMessageTextWebSocketHandler chatMessageTextWebSocketHandler() {
+        return new ChatMessageTextWebSocketHandler(chatMessageWebSocketSessionRepository);
     }
 
     @Bean
     public HandshakeHandler protocolOneHandshakeHandler() {
         final DefaultHandshakeHandler handler = new DefaultHandshakeHandler();
-        handler.setSupportedProtocols("protocolone", "protocoltwo");
+        handler.setSupportedProtocols(SUPPORTED_PROTOCOLS);
         return handler;
     }
-
-
-//    @Override
-//    public void configureMessageBroker(final MessageBrokerRegistry registry) {
-//        super.configureMessageBroker(registry);
-//        registry.enableSimpleBroker(PATH);
-//    }
-
-//    @Override
-//    public void registerStompEndpoints(final StompEndpointRegistry registry) {
-//        registry.addEndpoint(PATH).setAllowedOrigins("*");
-//    }
-//
-//    @Override
-//    protected void configureInbound(final MessageSecurityMetadataSourceRegistry messages) {
-//        messages
-//                .simpTypeMatchers(SimpMessageType.CONNECT, SimpMessageType.UNSUBSCRIBE, SimpMessageType.DISCONNECT).permitAll()
-//                .simpDestMatchers("/chat/**").permitAll()
-//                .anyMessage().permitAll();
-//    }
 }

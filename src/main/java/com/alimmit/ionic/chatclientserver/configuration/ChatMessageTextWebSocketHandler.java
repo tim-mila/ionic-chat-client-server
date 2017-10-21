@@ -1,5 +1,6 @@
 package com.alimmit.ionic.chatclientserver.configuration;
 
+import com.alimmit.ionic.chatclientserver.repository.ChatMessageWebSocketSessionRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.web.socket.CloseStatus;
@@ -13,27 +14,35 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class ProtocolOneWebSocketHandler extends TextWebSocketHandler implements SubProtocolCapable {
+public class ChatMessageTextWebSocketHandler extends TextWebSocketHandler implements SubProtocolCapable {
 
-    private static final Log LOG = LogFactory.getLog(ProtocolOneWebSocketHandler.class);
+    private static final Log LOG = LogFactory.getLog(ChatMessageTextWebSocketHandler.class);
 
-    private final List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
+    private final ChatMessageWebSocketSessionRepository chatMessageWebSocketSessionRepository;
 
-    public ProtocolOneWebSocketHandler() {
+    public ChatMessageTextWebSocketHandler(final ChatMessageWebSocketSessionRepository chatMessageWebSocketSessionRepository) {
         super();
+        this.chatMessageWebSocketSessionRepository = chatMessageWebSocketSessionRepository;
     }
 
     @Override
     public void afterConnectionEstablished(final WebSocketSession session) throws Exception {
         LOG.info("afterConnectionEstablished");
         LOG.info("afterConnectionEstablished::getAcceptedProtocol::" + session.getAcceptedProtocol());
-        sessions.add(session);
+        chatMessageWebSocketSessionRepository.add(session);
+    }
+
+    @Override
+    public void afterConnectionClosed(final WebSocketSession session, final CloseStatus status) throws Exception {
+        super.afterConnectionClosed(session, status);
+        chatMessageWebSocketSessionRepository.remove(session);
     }
 
     @Override
     protected void handleTextMessage(final WebSocketSession session, final TextMessage message) throws Exception {
         LOG.info("handleTextMessage::" + message.getPayload());
-        sessions.forEach(webSocketSession -> {
+        LOG.info("handleTextMessage::sessions::" + chatMessageWebSocketSessionRepository.count());
+        chatMessageWebSocketSessionRepository.all().forEach(webSocketSession -> {
             try {
                 LOG.debug("check send to websocket " + webSocketSession.getId());
                 if (!session.getId().equalsIgnoreCase(webSocketSession.getId())) {
@@ -45,12 +54,6 @@ public class ProtocolOneWebSocketHandler extends TextWebSocketHandler implements
                 LOG.error(e.getMessage());
             }
         });
-    }
-
-    @Override
-    public void afterConnectionClosed(final WebSocketSession session, final CloseStatus status) throws Exception {
-        super.afterConnectionClosed(session, status);
-        sessions.remove(session);
     }
 
     @Override
