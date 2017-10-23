@@ -8,5 +8,5 @@ public interface OAuthLoginService {
 
     ResponseEntity<OAuth2AccessToken> login(User user);
 
-    ResponseEntity<OAuth2AccessToken> signup(User user);
+    ResponseEntity<OAuth2AccessToken> signUp(User user);
 }

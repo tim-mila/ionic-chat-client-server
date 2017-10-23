@@ -23,6 +23,7 @@ import java.util.List;
 public class OAuthLoginServiceImpl implements OAuthLoginService {
 
     private static final Log LOG = LogFactory.getLog(OAuthLoginServiceImpl.class);
+    private static final String OAUTH_GRANT_TYPE = "password";
 
     private final AuthorizationServerProperties authorizationServerProperties;
 
@@ -31,16 +32,16 @@ public class OAuthLoginServiceImpl implements OAuthLoginService {
     }
 
     @Override
-    public ResponseEntity<OAuth2AccessToken> signup(final User user) {
+    public ResponseEntity<OAuth2AccessToken> signUp(final User user) {
         try {
-            LOG.debug("signup::" + user.getUsername());
+            LOG.debug("signUp::" + user.getUsername());
             final RestTemplate template = restTemplate();
 
             final String authorizationHeader = "Basic " + org.apache.commons.codec.binary.Base64.encodeBase64String("clientIdPassword:secret".getBytes());
             final MultiValueMap<String, String> headers = new HttpHeaders();
             headers.add("Authorization", authorizationHeader);
 
-            template.exchange(authorizationServerProperties.getSignUpUri(), HttpMethod.POST, new HttpEntity<User>(user), User.class).getBody();
+            template.exchange(authorizationServerProperties.getSignUpUri(), HttpMethod.POST, new HttpEntity<User>(user, headers), User.class).getBody();
             return login(user);
         }
         catch(Exception e) {
@@ -60,8 +61,8 @@ public class OAuthLoginServiceImpl implements OAuthLoginService {
             headers.add("Authorization", authorizationHeader);
 
             final MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-            body.add("grant_type", "password");
-            body.add("clientId", "clientIdPassword");
+            body.add("grant_type", OAUTH_GRANT_TYPE);
+            body.add("clientId", authorizationServerProperties.getClientId());
             body.add("username", user.getUsername());
             body.add("password", user.getPassword());
 

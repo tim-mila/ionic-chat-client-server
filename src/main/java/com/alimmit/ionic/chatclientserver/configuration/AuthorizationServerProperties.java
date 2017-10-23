@@ -42,7 +42,7 @@ public class AuthorizationServerProperties {
         this.signUpUri = signUpUri;
     }
 
-    String getClientId() {
+    public String getClientId() {
         return clientId;
     }
 
